@@ -31,11 +31,17 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                                "/",
                                 "/api/auth/**",
                                 "/api/documents/public/**",
                                 "/api/documents/certificate/**",
                                 "/frontend/**",
-                                "/**.html"
+                                "/**.html",
+                                "/favicon.ico",
+                                "/assets/**",
+                                "/css/**",
+                                "/js/**",
+                                "/images/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
