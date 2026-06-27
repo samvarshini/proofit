@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProofIt — Verify Document</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 40px;
+        }
+        .card {
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 20px;
+            padding: 48px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        .loading { color: #666; font-size: 16px; }
+        .spinner {
+            width: 40px; height: 40px;
+            border: 3px solid #333;
+            border-top-color: #6366f1;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .verified-icon { font-size: 72px; margin-bottom: 20px; }
+        .verified-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #22c55e;
+            margin-bottom: 8px;
+        }
+        .verified-sub {
+            color: #666;
+            margin-bottom: 36px;
+            font-size: 15px;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 16px 0;
+            border-bottom: 1px solid #1a1a1a;
+            text-align: left;
+            gap: 20px;
+        }
+        .detail-label {
+            color: #555;
+            font-size: 13px;
+            flex-shrink: 0;
+            width: 120px;
+        }
+        .detail-value {
+            color: #ccc;
+            font-size: 13px;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        .chain-info {
+            background: #0d0d1a;
+            border: 1px solid #2a2a4a;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 28px;
+            text-align: left;
+        }
+        .chain-info h4 {
+            color: #6366f1;
+            font-size: 13px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .chain-info p {
+            color: #555;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        .back-btn {
+            margin-top: 32px;
+            display: inline-block;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+        }
+        .error-icon { font-size: 72px; margin-bottom: 20px; }
+        .error-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #ef4444;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">🔐 ProofIt</div>
+
+    <div class="card" id="card">
+        <div class="spinner"></div>
+        <div class="loading">Verifying document on the chain...</div>
+    </div>
+
+    <script>
+        const API = 'http://localhost:8080/api';
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get('token');
+
+        async function verify() {
+            if (!token) {
+                showError('No verification token provided');
+                return;
+            }
+            try {
+                const res = await fetch(`${API}/documents/public/verify/${token}`);
+                if (!res.ok) {
+                    showError('Document not found');
+                    return;
+                }
+                const doc = await res.json();
+                showVerified(doc);
+            } catch (e) {
+                showError('Could not connect to verification server');
+            }
+        }
+
+        function showVerified(doc) {
+            document.getElementById('card').innerHTML = `
+                <div class="verified-icon">✅</div>
+                <div class="verified-title">Document Verified</div>
+                <div class="verified-sub">This document is authentic and has not been tampered with</div>
+
+                <div class="detail-row">
+                    <span class="detail-label">File Name</span>
+                    <span class="detail-value">${doc.fileName}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Created On</span>
+                    <span class="detail-value">${new Date(doc.uploadedAt).toLocaleString('en-IN')}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">SHA-256 Hash</span>
+                    <span class="detail-value">${doc.documentHash}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Chain Hash</span>
+                    <span class="detail-value">${doc.chainHash}</span>
+                </div>
+
+                <div class="chain-info">
+                    <h4>⛓️ Hash Chain Verification</h4>
+                    <p>This document's SHA-256 fingerprint is permanently recorded in a tamper-proof hash chain. Any modification to the original file would produce a completely different hash, instantly exposing tampering.</p>
+                </div>
+
+                <a href="index.html" class="back-btn">🔐 ProofIt Your Own Documents</a>
+            `;
+        }
+
+        function showError(msg) {
+            document.getElementById('card').innerHTML = `
+                <div class="error-icon">❌</div>
+                <div class="error-title">Verification Failed</div>
+                <div class="verified-sub">${msg}</div>
+                <a href="index.html" class="back-btn">Go to ProofIt</a>
+            `;
+        }
+
+        verify();
+    </script>
+</body>
+</html>

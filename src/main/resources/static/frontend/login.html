@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProofIt — Login</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 440px;
+            padding: 20px;
+        }
+        .logo {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 40px;
+        }
+        .card {
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 20px;
+            padding: 40px;
+        }
+        .tabs {
+            display: flex;
+            background: #0a0a0a;
+            border-radius: 10px;
+            padding: 4px;
+            margin-bottom: 32px;
+        }
+        .tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            color: #666;
+            border: none;
+            background: transparent;
+        }
+        .tab.active {
+            background: #6366f1;
+            color: white;
+            font-weight: 600;
+        }
+        .form { display: none; }
+        .form.active { display: block; }
+        .form h2 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        .form p {
+            color: #666;
+            margin-bottom: 28px;
+            font-size: 14px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 8px;
+        }
+        input {
+            width: 100%;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 14px 16px;
+            color: white;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus { border-color: #6366f1; }
+        .btn {
+            width: 100%;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        .btn:hover { opacity: 0.9; }
+        .error {
+            background: #2d1b1b;
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 16px;
+            display: none;
+        }
+        .success {
+            background: #1b2d1b;
+            border: 1px solid #22c55e;
+            color: #22c55e;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 16px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🔐 ProofIt</div>
+        <div class="card">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('login')">Login</button>
+                <button class="tab" onclick="switchTab('register')">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <div class="form active" id="login-form">
+                <h2>Welcome back</h2>
+                <p>Login to access your document vault</p>
+                <div class="error" id="login-error"></div>
+                <div class="success" id="login-success"></div>
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="login-email" placeholder="you@example.com">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" placeholder="••••••••">
+                </div>
+                <button class="btn" onclick="login()">Login →</button>
+            </div>
+
+            <!-- Register Form -->
+            <div class="form" id="register-form">
+                <h2>Create account</h2>
+                <p>Start protecting your documents today</p>
+                <div class="error" id="register-error"></div>
+                <div class="success" id="register-success"></div>
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" id="register-name" placeholder="Sam Kumar">
+                </div>
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="register-email" placeholder="you@example.com">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="register-password" placeholder="••••••••">
+                </div>
+                <button class="btn" onclick="register()">Create Account →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API = 'http://localhost:8080/api';
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.form').forEach(f => f.classList.remove('active'));
+            document.getElementById(tab + '-form').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        async function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            try {
+                const res = await fetch(`${API}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                if (data.token) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('name', data.name);
+                    localStorage.setItem('email', data.email);
+                    showSuccess('login-success', 'Login successful! Redirecting...');
+                    setTimeout(() => window.location.href = 'dashboard.html', 1000);
+                } else {
+                    showError('login-error', 'Invalid email or password');
+                }
+            } catch (e) {
+                showError('login-error', 'Connection error. Is the server running?');
+            }
+        }
+
+        async function register() {
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            try {
+                const res = await fetch(`${API}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+                const data = await res.json();
+                if (data.token) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('name', data.name);
+                    localStorage.setItem('email', data.email);
+                    showSuccess('register-success', 'Account created! Redirecting...');
+                    setTimeout(() => window.location.href = 'dashboard.html', 1000);
+                } else {
+                    showError('register-error', data.message || 'Registration failed');
+                }
+            } catch (e) {
+                showError('register-error', 'Connection error. Is the server running?');
+            }
+        }
+
+        function showError(id, msg) {
+            const el = document.getElementById(id);
+            el.textContent = msg;
+            el.style.display = 'block';
+        }
+
+        function showSuccess(id, msg) {
+            const el = document.getElementById(id);
+            el.textContent = msg;
+            el.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
