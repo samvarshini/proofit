@@ -17,12 +17,26 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(authService.register(request));
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+        try {
+            return ResponseEntity.ok(authService.register(request));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(
+                    java.util.Map.of("error", e.getMessage(), "cause",
+                            e.getCause() != null ? e.getCause().getMessage() : "none")
+            );
+        }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
-        return ResponseEntity.ok(authService.login(request));
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        try {
+            return ResponseEntity.ok(authService.login(request));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(
+                    java.util.Map.of("error", e.getMessage(), "cause",
+                            e.getCause() != null ? e.getCause().getMessage() : "none")
+            );
+        }
     }
 }
