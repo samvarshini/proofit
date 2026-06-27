@@ -1,8 +1,11 @@
 package com.proofit.proofit.controller;
 
 import com.proofit.proofit.model.Document;
+import com.proofit.proofit.service.CertificateService;
 import com.proofit.proofit.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +20,9 @@ public class DocumentController {
 
     @Autowired
     private DocumentService documentService;
+
+    @Autowired
+    private CertificateService certificateService;
 
     @PostMapping("/upload")
     public ResponseEntity<Document> upload(@RequestParam("file") MultipartFile file,
@@ -54,5 +60,16 @@ public class DocumentController {
                         ? "✅ File matches. Original. Not tampered."
                         : "❌ File does not match. Possibly tampered."
         ));
+    }
+
+    @GetMapping("/certificate/{token}")
+    public ResponseEntity<byte[]> downloadCertificate(@PathVariable String token) throws Exception {
+        Document doc = documentService.getByToken(token);
+        byte[] pdf = certificateService.generateCertificate(doc);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=ProofIt-Certificate-" + doc.getFileName() + ".pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdf);
     }
 }
