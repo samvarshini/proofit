@@ -8,7 +8,10 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', sans-serif;
-            background: #0a0a0a;
+            background:
+                radial-gradient(circle at 12% 8%, rgba(99, 102, 241, 0.3), transparent 30%),
+                radial-gradient(circle at 90% 18%, rgba(34, 197, 94, 0.14), transparent 26%),
+                linear-gradient(135deg, #06070f 0%, #111827 48%, #070711 100%);
             color: #fff;
             min-height: 100vh;
         }
@@ -17,7 +20,12 @@
             justify-content: space-between;
             align-items: center;
             padding: 20px 40px;
-            border-bottom: 1px solid #222;
+            background: rgba(8, 12, 24, 0.52);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(18px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
         .logo {
             font-size: 22px;
@@ -27,33 +35,37 @@
             -webkit-text-fill-color: transparent;
         }
         .user-info { display: flex; align-items: center; gap: 16px; }
-        .user-name { color: #888; font-size: 14px; }
+        .user-name { color: #cbd5e1; font-size: 14px; }
         .logout-btn {
-            background: transparent;
-            border: 1px solid #333;
-            color: #888;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            color: #cbd5e1;
             padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
             font-size: 13px;
+            backdrop-filter: blur(12px);
         }
         .main { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
         .page-title { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
-        .page-sub { color: #666; margin-bottom: 40px; }
+        .page-sub { color: #cbd5e1; margin-bottom: 40px; }
         .upload-zone {
-            border: 2px dashed #333;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
             border-radius: 16px;
             padding: 60px 40px;
             text-align: center;
             margin-bottom: 40px;
             transition: border-color 0.2s;
             cursor: pointer;
+            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
+            backdrop-filter: blur(18px);
         }
-        .upload-zone:hover { border-color: #6366f1; }
-        .upload-zone.dragover { border-color: #6366f1; background: #111; }
+        .upload-zone:hover { border-color: rgba(165, 180, 252, 0.72); }
+        .upload-zone.dragover { border-color: rgba(165, 180, 252, 0.9); background: rgba(99, 102, 241, 0.12); }
         .upload-icon { font-size: 48px; margin-bottom: 16px; }
         .upload-zone h3 { font-size: 20px; margin-bottom: 8px; }
-        .upload-zone p { color: #666; margin-bottom: 24px; }
+        .upload-zone p { color: #cbd5e1; margin-bottom: 24px; }
         .upload-btn {
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
             color: white;
@@ -63,6 +75,7 @@
             font-size: 15px;
             cursor: pointer;
             font-weight: 600;
+            box-shadow: 0 18px 45px rgba(99, 102, 241, 0.34);
         }
         #file-input { display: none; }
         .uploading {
@@ -70,7 +83,7 @@
             align-items: center;
             gap: 12px;
             justify-content: center;
-            color: #6366f1;
+            color: #c4b5fd;
         }
         .spinner {
             width: 20px; height: 20px;
@@ -84,18 +97,20 @@
             font-size: 20px;
             font-weight: 600;
             margin-bottom: 20px;
-            color: #ccc;
+            color: #e5e7eb;
         }
         .doc-grid { display: flex; flex-direction: column; gap: 16px; }
         .doc-card {
-            background: #111;
-            border: 1px solid #222;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.14);
             border-radius: 14px;
             padding: 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.22);
+            backdrop-filter: blur(18px);
         }
         .doc-info { flex: 1; }
         .doc-name {
@@ -105,38 +120,38 @@
         }
         .doc-meta {
             font-size: 13px;
-            color: #555;
+            color: #94a3b8;
             margin-bottom: 10px;
         }
         .doc-hash {
             font-size: 11px;
-            color: #444;
+            color: #94a3b8;
             font-family: monospace;
             word-break: break-all;
         }
-        .doc-actions { display: flex; gap: 10px; flex-shrink: 0; flex-wrap: wrap; }
+        .doc-actions { display: flex; gap: 10px; flex-shrink: 0; }
         .btn-verify {
-            background: #1a1a2e;
-            border: 1px solid #6366f1;
-            color: #6366f1;
+            background: rgba(99, 102, 241, 0.14);
+            border: 1px solid rgba(165, 180, 252, 0.38);
+            color: #c4b5fd;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .btn-certificate {
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(251, 191, 36, 0.38);
+            color: #fbbf24;
             padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
             font-size: 13px;
         }
         .btn-copy {
-            background: #1a2e1a;
-            border: 1px solid #22c55e;
-            color: #22c55e;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 13px;
-        }
-        .btn-cert {
-            background: #2d1b00;
-            border: 1px solid #f59e0b;
-            color: #f59e0b;
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(74, 222, 128, 0.38);
+            color: #86efac;
             padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
@@ -146,9 +161,9 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: #1a1a2e;
-            border: 1px solid #333;
-            color: #6366f1;
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            color: #c4b5fd;
             padding: 4px 10px;
             border-radius: 20px;
             font-size: 11px;
@@ -157,21 +172,22 @@
         .empty-state {
             text-align: center;
             padding: 60px;
-            color: #444;
+            color: #94a3b8;
         }
         .empty-state p { font-size: 16px; margin-top: 12px; }
         .toast {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: #1b2d1b;
-            border: 1px solid #22c55e;
-            color: #22c55e;
+            background: rgba(27, 45, 27, 0.72);
+            border: 1px solid rgba(74, 222, 128, 0.5);
+            color: #86efac;
             padding: 14px 20px;
             border-radius: 10px;
             font-size: 14px;
             display: none;
             z-index: 1000;
+            backdrop-filter: blur(14px);
         }
     </style>
 </head>
@@ -188,6 +204,7 @@
         <div class="page-title">Your Document Vault</div>
         <div class="page-sub">Every document is timestamped and added to your personal hash chain</div>
 
+        <!-- Upload Zone -->
         <div class="upload-zone" id="upload-zone"
              onclick="document.getElementById('file-input').click()"
              ondragover="handleDragOver(event)"
@@ -206,6 +223,7 @@
         </div>
         <input type="file" id="file-input" onchange="uploadFile(this.files[0])">
 
+        <!-- Documents List -->
         <div class="section-title">⛓️ Hash Chain — <span id="doc-count">0</span> documents</div>
         <div class="doc-grid" id="doc-grid">
             <div class="empty-state">
@@ -218,7 +236,7 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        const API = '/api';
+        const API = 'http://localhost:8080/api';
         const token = localStorage.getItem('token');
 
         if (!token) window.location.href = 'login.html';
@@ -306,7 +324,7 @@
                             <button class="btn-verify" onclick="openVerify('${doc.verificationToken}')">
                                 🔍 Verify
                             </button>
-                            <button class="btn-cert" onclick="window.open('/api/documents/certificate/${doc.verificationToken}', '_blank')">
+                            <button class="btn-certificate" onclick="downloadCertificate('${doc.verificationToken}')">
                                 📜 Certificate
                             </button>
                         </div>
@@ -325,6 +343,10 @@
 
         function openVerify(token) {
             window.open(`verify.html?token=${token}`, '_blank');
+        }
+
+        function downloadCertificate(token) {
+            window.open(`${API}/documents/certificate/${token}`, '_blank');
         }
 
         function formatDate(dateStr) {
