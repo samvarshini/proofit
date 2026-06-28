@@ -114,7 +114,7 @@
             font-family: monospace;
             word-break: break-all;
         }
-        .doc-actions { display: flex; gap: 10px; flex-shrink: 0; }
+        .doc-actions { display: flex; gap: 10px; flex-shrink: 0; flex-wrap: wrap; }
         .btn-verify {
             background: #1a1a2e;
             border: 1px solid #6366f1;
@@ -128,6 +128,15 @@
             background: #1a2e1a;
             border: 1px solid #22c55e;
             color: #22c55e;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .btn-cert {
+            background: #2d1b00;
+            border: 1px solid #f59e0b;
+            color: #f59e0b;
             padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
@@ -179,7 +188,6 @@
         <div class="page-title">Your Document Vault</div>
         <div class="page-sub">Every document is timestamped and added to your personal hash chain</div>
 
-        <!-- Upload Zone -->
         <div class="upload-zone" id="upload-zone"
              onclick="document.getElementById('file-input').click()"
              ondragover="handleDragOver(event)"
@@ -198,7 +206,6 @@
         </div>
         <input type="file" id="file-input" onchange="uploadFile(this.files[0])">
 
-        <!-- Documents List -->
         <div class="section-title">⛓️ Hash Chain — <span id="doc-count">0</span> documents</div>
         <div class="doc-grid" id="doc-grid">
             <div class="empty-state">
@@ -298,6 +305,9 @@
                             </button>
                             <button class="btn-verify" onclick="openVerify('${doc.verificationToken}')">
                                 🔍 Verify
+                            </button>
+                            <button class="btn-cert" onclick="window.open('/api/documents/certificate/${doc.verificationToken}', '_blank')">
+                                📜 Certificate
                             </button>
                         </div>
                     </div>
